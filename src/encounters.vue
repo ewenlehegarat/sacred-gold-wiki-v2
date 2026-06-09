@@ -64,7 +64,7 @@
     <Nav />
     <main>
         <div class="input">
-            <input type="text" placeholder="Search a pokemon" v-model="searchQuery">
+            <input type="text" placeholder="Search a route" v-model="searchQuery">
             <ion-icon name="close-outline" v-if="searchQuery.length > 0" @click="searchQuery = ''" ></ion-icon>
         </div>
         <div class="divs" v-for="encounter in filteredEncounters" :key="encounter.id">
