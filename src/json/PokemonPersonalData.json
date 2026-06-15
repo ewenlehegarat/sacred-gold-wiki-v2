@@ -6519,6 +6519,7 @@
     {
         "ID": 413,
         "Name": "Wormadam-Sandy",
+        "Form": "Sandy",
         "Type1": "BUG",
         "Type2": "GROUND",
         "BaseHP": 60,
@@ -6541,6 +6542,7 @@
     {
         "ID": 413,
         "Name": "Wormadam-Trash",
+        "Form": "Trash",
         "Type1": "BUG",
         "Type2": "STEEL",
         "BaseHP": 60,

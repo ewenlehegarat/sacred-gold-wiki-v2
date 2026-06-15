@@ -1,8 +1,8 @@
 <script>
-  import Nav from './components/nav.vue'
   import PokemonData from './json/PokemonPersonalData.json'
   import PokemonLearnSet from './json/LearnsetData.json'
   import PokemonEvolutionData from './json/EvolutionData.json'
+  import Nav from './components/nav.vue'
 
   export default {
     components: { Nav },
@@ -29,7 +29,6 @@
             String(p.ID).includes(search)
           )
         }
-
         const sorted = [...list]
         if (this.selectedSort === 'pokedex01') {
           sorted.sort((a, b) => a.ID - b.ID)
@@ -45,21 +44,22 @@
     },
     methods: {
       formatID(id) {
+        // padStart complete avec une chaine de caratère, on change l'id en string
         return String(id).padStart(3, '0')
       },
+      // si il y'a une form rajoute dans le return la form, sinon il prend juste l'id
       getSprite(id, form = null) {
         if (form) {
           return `./src/assets/img/pokemon_animated_sprite/${id}-${form}.gif`
         }
         return `./src/assets/img/pokemon_animated_sprite/${id}.gif`
       },
-      getType(type) {
-        return `./src/assets/img/type/${type}.png`
-      },
       getLearnset(id) {
+        // cherche les attaques par rapport à l'id
         return PokemonLearnSet.find(p => p.ID === id)
       },
       getEvolution(id) {
+        // cherche les evolutions par rapport à l'id
         return PokemonEvolutionData.find(p => p.ID === id)
       },
       formatMethod(method) {
@@ -74,6 +74,7 @@
         return PokemonData.find(p => p.Name === name)?.ID
       },
       searchAbility(ability) {
+        // cherche le talent sur pokemondb uniquement si il trouve quelque chose et en les espace ou tiret
         if (!ability) return '#'
         return `https://pokemondb.net/ability/${ability.toLowerCase().replace(' ', '-')}`
       },
@@ -124,6 +125,7 @@
     <div class="cards">
       <div class="card" v-for="pokemon in filteredPokemon" :key="pokemon.ID + '-' + (pokemon.Form ?? 'base') + '-' + pokemon.Name">
         <div class="name">
+          <!-- va chercher le nom du pokemon dans le json -->
           <h2>{{ pokemon.Name }}</h2>
           <h2>#{{ formatID(pokemon.ID) }}</h2>
         </div>
@@ -134,59 +136,61 @@
           <a v-if="pokemon.Ability2 && pokemon.Ability2 !== '-'" :href="searchAbility(pokemon.Ability2)" target="_blank">{{ pokemon.Ability2 }} (H)</a>
         </div>
         <div class="type_container">
-        <img :src="getType(pokemon.Type1)" :alt="pokemon.Type1">
-        <img v-if="pokemon.Type1 !== pokemon.Type2"
-          :src="getType(pokemon.Type2)"
-          :alt="getType(pokemon.Type2)"
-        >
-      </div>
-      <div class="stats_container">
-        <div class="text_stats">
-          <h5>Hp : {{ pokemon.BaseHP }}</h5>
-          <h5>Atk : {{ pokemon.BaseAttack }}</h5>
-          <h5>Def : {{ pokemon.BaseDefense }}</h5>
-          <h5>Spa : {{ pokemon.BaseSpecialAttack }}</h5>
-          <h5>Spd : {{ pokemon.BaseSpecialDefense }}</h5>
-          <h5>Spe : {{ pokemon.BaseSpeed }}</h5>
+          <img :src="`./src/assets/img/type/${pokemon.Type1}.png`" :alt="pokemon.Type1">
+          <img
+            v-if="pokemon.Type1 !== pokemon.Type2"
+            :src="`./src/assets/img/type/${pokemon.Type2}.png`"
+            :alt="pokemon.Type2 + ' type image'"
+          >
         </div>
-        <div class="barre_stats">
-          <div class="barre_hp barre" :style="{ width: pokemon.BaseHP + 'px' }">
-            <span v-if="pokemon.buffs?.hp" :class="pokemon.buffs.hp > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.hp > 0 ? '+' : ''}${pokemon.buffs.hp}` }}</span>
+        <div class="stats_container">
+          <div class="text_stats">
+            <h5>Hp : {{ pokemon.BaseHP }}</h5>
+            <h5>Atk : {{ pokemon.BaseAttack }}</h5>
+            <h5>Def : {{ pokemon.BaseDefense }}</h5>
+            <h5>Spa : {{ pokemon.BaseSpecialAttack }}</h5>
+            <h5>Spd : {{ pokemon.BaseSpecialDefense }}</h5>
+            <h5>Spe : {{ pokemon.BaseSpeed }}</h5>
           </div>
-          <div class="barre_atk barre" :style="{ width: pokemon.BaseAttack + 'px' }">
-            <span v-if="pokemon.buffs?.atk":class="pokemon.buffs.atk > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.atk > 0 ? '+' : ''}${pokemon.buffs.atk}` }}</span>
-          </div>
-          <div class="barre_def barre" :style="{ width: pokemon.BaseDefense + 'px' }">
-            <span v-if="pokemon.buffs?.def":class="pokemon.buffs.def > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.def > 0 ? '+' : ''}${pokemon.buffs.def}` }}</span>
-          </div>
-          <div class="barre_spa barre" :style="{ width: pokemon.BaseSpecialAttack + 'px' }">
-            <span v-if="pokemon.buffs?.spa":class="pokemon.buffs.spa > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.spa > 0 ? '+' : ''}${pokemon.buffs.spa}` }}</span>
-          </div>
-          <div class="barre_spd barre" :style="{ width: pokemon.BaseSpecialDefense + 'px' }">
-            <span v-if="pokemon.buffs?.spd":class="pokemon.buffs.spd > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.spd > 0 ? '+' : ''}${pokemon.buffs.spd}` }}</span>
-          </div>
-          <div class="barre_spe barre" :style="{ width: pokemon.BaseSpeed + 'px' }">
-            <span v-if="pokemon.buffs?.spe":class="pokemon.buffs.spe > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.spe > 0 ? '+' : ''}${pokemon.buffs.spe}` }}</span>
+          <div class="barre_stats">
+            <div class="barre_hp barre" :style="{ width: pokemon.BaseHP + 'px' }">
+              <!-- span ne s'affiche que si y'a un buff et si le changement est supérieur à 0 il s'agit d'un buff sinon c'est un debuff -->
+              <span v-if="pokemon.buffs?.hp" :class="pokemon.buffs.hp > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.hp > 0 ? '+' : ''}${pokemon.buffs.hp}` }}</span>
+            </div>
+            <div class="barre_atk barre" :style="{ width: pokemon.BaseAttack + 'px' }">
+              <span v-if="pokemon.buffs?.atk":class="pokemon.buffs.atk > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.atk > 0 ? '+' : ''}${pokemon.buffs.atk}` }}</span>
+            </div>
+            <div class="barre_def barre" :style="{ width: pokemon.BaseDefense + 'px' }">
+              <span v-if="pokemon.buffs?.def":class="pokemon.buffs.def > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.def > 0 ? '+' : ''}${pokemon.buffs.def}` }}</span>
+            </div>
+            <div class="barre_spa barre" :style="{ width: pokemon.BaseSpecialAttack + 'px' }">
+              <span v-if="pokemon.buffs?.spa":class="pokemon.buffs.spa > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.spa > 0 ? '+' : ''}${pokemon.buffs.spa}` }}</span>
+            </div>
+            <div class="barre_spd barre" :style="{ width: pokemon.BaseSpecialDefense + 'px' }">
+              <span v-if="pokemon.buffs?.spd":class="pokemon.buffs.spd > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.spd > 0 ? '+' : ''}${pokemon.buffs.spd}` }}</span>
+            </div>
+            <div class="barre_spe barre" :style="{ width: pokemon.BaseSpeed + 'px' }">
+              <span v-if="pokemon.buffs?.spe":class="pokemon.buffs.spe > 0 ? 'buff' : 'debuff'"> {{ `${pokemon.buffs.spe > 0 ? '+' : ''}${pokemon.buffs.spe}` }}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <h3>Learnset :</h3>
-      <div class="learn_set">
-        <div v-for="move in getLearnset(pokemon.ID)?.Learnset" :key="move.Level + move.Move">
-          <h5>{{ move.Level }} - {{ move.Move }}</h5>
+        <h3>Learnset :</h3>
+        <div class="learn_set">
+          <div v-for="move in getLearnset(pokemon.ID)?.Learnset" :key="move.Level + move.Move">
+            <h5>{{ move.Level }} - {{ move.Move }}</h5>
+          </div>
         </div>
-      </div>
-      <div class="evo" v-if="getEvolution(pokemon.ID)?.Evolutions?.length">
-        <h3>Evolution :</h3>
-        <div v-for="evolution in getEvolution(pokemon.ID)?.Evolutions" :key="evolution.Method + evolution.Param + evolution.Target">
-          <div class="method">
-            <h5>{{ formatMethod(evolution.Method) }} {{ evolution.Param }}</h5>
-            <img :src="getSprite(getPokemonIDByName(evolution.Target))" :alt="evolution.Target" @click="searchPokemon(evolution.Target)" style="cursor: pointer;"/>
+        <div class="evo" v-if="getEvolution(pokemon.ID)?.Evolutions?.length">
+          <h3>Evolution :</h3>
+          <div v-for="evolution in getEvolution(pokemon.ID)?.Evolutions" :key="evolution.Method + evolution.Param + evolution.Target">
+            <div class="method">
+              <h5>{{ formatMethod(evolution.Method) }} {{ evolution.Param }}</h5>
+              <img :src="getSprite(getPokemonIDByName(evolution.Target))" :alt="evolution.Target" @click="searchPokemon(evolution.Target)" style="cursor: pointer;"/>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </main>
 </template>
 
@@ -303,10 +307,10 @@
             gap: 7px;
             
             .barre{
+              max-width: 150px;
               display: flex;
               justify-content: center;
               align-items: center;
-              max-width: 150px;
               height: 20px;
               border: 1px solid var(--Black);
             }
