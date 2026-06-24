@@ -229,7 +229,7 @@
       width: 100%;
       height: 50px;
       padding-left: 15px;
-      margin-bottom: 150px;
+      margin-bottom: 100px;
       border-radius: 50px;
       outline: none;
       border: 2px solid var(--Black);

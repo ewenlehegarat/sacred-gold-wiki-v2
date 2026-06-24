@@ -8,6 +8,9 @@
 </script>
 
 <template>
+    <select name="filter" id="filter">
+        <option value="tm">Tm</option>
+    </select>
     <main>
         <div class="divs" v-for="technicalMachine in itemLocation.technical_machines" :key="technicalMachine.id">
             <div class="info">
@@ -97,8 +100,22 @@
 </template>
 
 <style scoped>
+
+    select{
+        cursor: pointer;
+        width: 100%;
+        max-width: 300px;
+        top: 85px;
+        left: 32px;
+        padding: 8px;
+        background-color: var(--White);
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 1px 5px var(--Black);
+        position: sticky;
+    }
     main{
-        padding: 150px 32px 32px 32px;
+        padding: 125px 32px 32px 32px;
         display: flex;
         flex-wrap: wrap;
         flex-direction: column;
